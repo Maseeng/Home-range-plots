@@ -1,0 +1,173 @@
+---
+title: "Home_range"
+author: "Maseeng"
+date: "12/9/2020"
+output: html_document
+---
+
+```{r, eval = FALSE}
+
+
+gitlibrary(geospaar)
+library(sf)
+library(rgdal)
+library(ggplot2)
+library(lattice)
+library(latticeExtra)
+
+library(ks)
+library(rgdal)
+library(maptools)
+library(gpclib)
+library(PBSmapping)
+
+install.packages("gpclib")
+install.packages("PBSmapping")
+
+library(sf)
+
+require(rgdal)
+require(ggplot2)
+
+install.packages("ggplot2")
+
+library('gstat')
+
+```
+
+
+```{r, eval = FALSE}
+
+Turtle_98_99 <- st_read("D:/Work_folder/CPED Turtle data for EMC Intern/TECA_1998_1999_TurtlePoints.shp")
+Turtle_98_99
+
+
+Road <- st_read("D:/Work_folder/CPED Turtle data for EMC Intern/roads.shp")
+Road
+
+Turtle_00_04 <- st_read("D:/Work_folder/CPED Turtle data for EMC Intern/TECA_Studies_TurtlePoints_2000_2004.shp")
+Turtle_00_04
+
+```
+
+roads::tempAggregate
+
+ROADS[index, "x"] <- 0
+ROADS[index, "y"] <- 0
+
+No_NA <- na.omit(object = ROADS)
+
+as(ROADS, "Spatial")
+
+
+```{r, eval = FALSE}
+
+
+ROADS <- readOGR(dsn="C:/Users/MMasitha/Downloads/0108916-200613084148143", layer="Reproject", stringsAsFactors = F)
+ROADS
+
+Roads01 <- st_read("C:/Users/MMasitha/Downloads/0108916-200613084148143/Reproject.shp")
+
+Roads01_geom <- Roads01$geometry
+
+summary(ROADS@data)
+
+TURTLEPOINTS <- readOGR(dsn="D:/Work_folder/CPED Turtle data for EMC Intern", layer="TECA_1998_1999_TurtlePoints", stringsAsFactors = F)
+TURTLEPOINTS
+
+Turtle01 <- st_read("C:/Users/MMasitha/Downloads/0108916-200613084148143/Reproj.shp")
+
+Turtle01_geom <- Turtle01$geometry
+
+summary(TURTLEPOINTS@data)
+
+TURTLEPOINTS02 <- readOGR(dsn="D:/Work_folder/CPED Turtle data for EMC Intern", layer="TECA_Studies_TurtlePoints_2000_2004", stringsAsFactors = F)
+TURTLEPOINTS02
+
+summary(TURTLEPOINTS02@data)
+
+```
+
+
+```{r, eval = FALSE}
+
+
+
+rlang::last_error()
+
+rlang::last_trace()
+
+
+```
+
+
+```{r, eval = FALSE}
+
+turtles_02 <- TURTLEPOINTS02[!is.na(TURTLEPOINTS02$x) & !is.na(TURTLEPOINTS02$y),]
+turtles_02
+
+turtles_01 <- TURTLEPOINTS[!is.na(TURTLEPOINTS$x) & !is.na(TURTLEPOINTS$y),]
+turtles_01
+
+roads_sp <- ROADS[!is.na(ROADS$x) & !is.na(ROADS$y),]
+roads_sp
+
+```
+
+
+```{r, eval = FALSE}
+
+turtles_02 <- TURTLEPOINTS02[!is.na(TURTLEPOINTS02$x) & !is.na(TURTLEPOINTS02$y),]
+turtles_02
+
+turtles_01 <- TURTLEPOINTS[!is.na(TURTLEPOINTS$x) & !is.na(TURTLEPOINTS$y),]
+turtles_01
+
+roads_sp <- ROADS[!is.na(ROADS$x) & !is.na(ROADS$y),]
+roads_sp
+
+
+
+
+```
+
+
+```{r, eval = FALSE}
+
+library(sp)
+library(adehabitatHR)
+
+turtles.mcp2 <- mcp(TURTLEPOINTS02, percent = 100)
+turtles.mcp2
+
+turtles.mcp <- mcp(TURTLEPOINTS, percent = 100)
+turtles.mcp
+
+library(scales) # Helps make polygons partly transparent using the alpha argument below
+plot(TURTLEPOINTS, col = as.factor(TURTLEPOINTS@data$id), pch = 16)
+plot(turtles.mcp2, col = alpha(1:5, 0.5), add = TRUE)
+
+plot(TURTLEPOINTS, col = as.factor(TURTLEPOINTS02@data$id), pch = 16)
+plot(turtles.mcp2, col = alpha(1:5, 0.5), add = TRUE)
+
+# Transform the point and MCP objects. 
+TURTLEPOINTS.spgeo <- spTransform(TURTLEPOINTS, CRS("+proj=longlat"))
+turtles.mcpgeo <- spTransform(turtles.mcp, CRS("+proj=longlat"))
+
+
+```
+
+
+```{r, eval = FALSE}
+
+head(TURTLEPOINTS)
+
+map <- ggplot() + geom_polygon(data = ROADS, aes(x = long, y = lat, group = group), colour = "black", fill = NA)
+
+```
+
+
+```{r, eval = FALSE}
+git config --global user.name "Maseeng"
+
+```

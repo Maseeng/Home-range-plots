@@ -1,0 +1,36 @@
+---
+title: "Overview of the mjm346 Package"
+author: "Maseeng Masitha"
+date: "2020-09-08"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my_first_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mjm346)
+```
+This is my first function, my_number_checker in my first package, mjm346. ,You can see the execution below.
+```{r}
+library(mjm346)
+my_number_checker(1)
+my_number_checker(5)
+my_number_checker(11)
+```
+I will be adding others and updating this vignette as we go.
+
+Next was the squirrel_function within the same package
+```{r}
+squirrel_function(FALSE)
+squirrel_function(TRUE)
+```
+The function takes true or false parameters depending on statements about admiring squirrels.

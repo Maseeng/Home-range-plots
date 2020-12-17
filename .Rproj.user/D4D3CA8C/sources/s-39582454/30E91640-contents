@@ -1,0 +1,155 @@
+---
+title: "Trial 03"
+author: "Maseeng"
+date: "12/15/2020"
+output: html_document
+---
+
+```{r, eval = FALSE}
+
+# First, set your working directory 
+setwd("D:/Work_folder/")
+
+# Read the csv file
+turtles1 <- read.csv("Export_Output.csv", 
+                    stringsAsFactors = FALSE) 
+
+# The file should be in your working directory.
+
+
+turtles2 <- read.csv("Export_Output_2.csv", 
+                    stringsAsFactors = FALSE) 
+turtles2
+
+
+Roads00 <- read.csv("Export_Output_3.csv", 
+                    stringsAsFactors = FALSE) 
+Roads00
+```
+
+
+```{R, eval = FALSE}
+
+
+
+```
+
+
+```{R, eval = FALSE}
+
+# SpatialPointsDataFrame objects don't like missing values
+# Remove two rows with NA's
+turtles1 <- turtles1[!is.na(turtles1$x) & !is.na(turtles1$y),]
+turtles1
+
+turtles2 <- turtles2[!is.na(turtles2$x) & !is.na(turtles2$y),]
+turtles2
+
+Roads00 <- Roads00[!is.na(Roads00$x) & !is.na(Roads00$y),]
+Roads00
+
+# Only include three columns (id, x, and y coordinates) for making MCP's
+
+turtles.sp1 <- turtles1[, c("FID", "Ind_ID", "Alt_ID", "Date", "Time")]
+turtles.sp1
+
+turtles.sp2 <- turtles2[, c("FID", "Date", "Temp_F", "Rel_hum_F", "TEMP_G")]
+
+Roads00.sp <- Roads00[, c("FID", "RT_NUMBER", "NAME", "SURFACE", "PLOW")]
+
+#turtles.sp <- turtles1[, c("id", "x", "y")]
+
+```
+
+
+```{R, eval = FALSE}
+
+# Create a SpatialPointsDataFrame by defining the coordinates
+library(sp)
+coordinates(turtles.sp1) <- c("x", "y")
+
+# Set the coordinate reference system (CRS)
+# The sample data are UTM points in WGS84 from zone 19N
+proj4string(turtles.sp) <- CRS( "+proj=utm +zone=19 +datum=WGS84 +units=m +no_defs" )
+
+```
+
+```{R, eval = FALSE}
+
+library(adehabitatHR) # Load library
+
+```
+
+```{R, eval = FALSE}
+
+# Calculate MCPs for each turtle
+turtles.mcp <- mcp(turtles.sp, percent = 100)
+
+# Examine output
+turtles.mcp
+
+```
+
+
+```{R = eval = FALSE}
+
+# Plot
+library(scales) # Helps make polygons partly transparent using the alpha argument below
+plot(turtles.sp, col = as.factor(turtles.sp@data$id), pch = 16)
+plot(turtles.mcp, col = alpha(1:5, 0.5), add = TRUE)
+
+hrs # examine dataframe
+
+```
+
+
+```{r, eval = FALSE}
+
+# Transform the point and MCP objects. 
+turtles.spgeo <- spTransform(turtles.sp, CRS("+proj=longlat"))
+turtles.mcpgeo <- spTransform(turtles.mcp, CRS("+proj=longlat"))
+
+```
+
+
+```{r, eval = FALSE}
+
+
+# Download tiles using ggmap
+library(ggmap)
+# mybasemap <- get_map(location = c(lon = mean(turtles.spgeo@coords[,1]), 
+#                                   lat = mean(turtles.spgeo@coords[,2])), 
+#                      source = "google", 
+#                      zoom = 14,
+#                     maptype = 'satellite')
+mybasemap <- get_stamenmap(bbox = c(left = min(turtles.spgeo@coords[,1])-0.005, 
+                                    bottom = min(turtles.spgeo@coords[,2])-0.005, 
+                                    right = max(turtles.spgeo@coords[,1])+0.005, 
+                                    top = max(turtles.spgeo@coords[,2])+0.005), 
+                           zoom = 12)
+```
+
+```{r, eval = }
+
+# Turn the spatial data frame of points into just a dataframe for plotting in ggmap
+turtles.geo <- data.frame(turtles.spgeo@coords, 
+                          id = turtles.spgeo@data$id )
+
+mymap.hr <- ggmap(mybasemap) + 
+  geom_polygon(data = fortify(turtles.mcpgeo),  
+               # Polygon layer needs to be "fortified" to add geometry to the dataframe
+              aes(long, lat, colour = id, fill = id),
+              alpha = 0.3) + # alpha sets the transparency
+  geom_point(data = turtles.geo, 
+             aes(x = x, y = y, colour = id))  +
+  theme(legend.position = c(0.15, 0.80)) +
+  labs(x = "Longitude", y = "Latitude") +
+  scale_fill_manual(name = "Turtle number", 
+                      values = c("red", "blue", "purple", "green", "orange"),
+                      breaks = c("T001", "T002", "T003", "T004", "T005")) +
+  scale_colour_manual(name = "Turtle number", 
+                      values = c("red", "blue", "purple", "green", "orange"),
+                      breaks = c("T001", "T002", "T003", "T004", "T005"))
+mymap.hr
+
+```

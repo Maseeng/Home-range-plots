@@ -1,0 +1,80 @@
+---
+title: "Testing01"
+author: "Maseeng"
+date: "12/11/2020"
+output: html_document
+---
+
+
+```{r, eval = FALSE}
+library(geospaar)
+
+Roads <- st_read("D:/Work_folder/roads.shp")
+Roads
+
+Roads_geom <- Roads$geometry
+Roads_geom
+
+plot(Roads_geom, col = "red")
+
+
+Turtle_98_99 <- st_read("D:/Work_folder/TECA_1998_1999_TurtlePoints.shp")
+Turtle_98_99
+
+Turtle_98_99_geom <- Turtle_98_99$geometry
+Turtle_98_99_geom
+
+
+plot(Turtle_98_99_geom, xlim=c(276200, 281800), ylim=c(824800, 832900),asp = 1, col = "yellow")
+
+
+
+Turtle_00_04 <- st_read("D:/Work_folder/TECA_Studies_TurtlePoints_2000_2004.shp")
+Turtle_00_04
+
+Turtle_00_04_geom <- Turtle_00_04$geometry
+Turtle_00_04_geom
+
+plot(Turtle_00_04_geom, xlim=c(275420.3,283783.6), ylim=c(821688.5,833464.3), col = "blue")
+
+plot(Turtle_00_04_geom, col = "blue")
+
+
+plot(Roads_geom, col = "red")
+plot(Turtle_98_99_geom, xlim=c(276200, 281800), ylim=c(824800, 832900), col = "yellow", add = TRUE)
+plot(Turtle_00_04_geom, xlim=c(275420.3,283783.6), ylim=c(821688.5,833464.3), col = "blue", add = TRUE)
+
+
+```
+
+```{r, eval = FALSE}
+
+turtles.sp1 <- Turtle_98_99_geom[, c("id", "x", "y")]
+turtles.sp1
+plot(turtles.sp1, xlim=c(276200, 281800), ylim=c(824800, 832900), col = "yellow")
+
+turtles.sp2 <- Turtle_00_04_geom[, c("id", "x", "y")]
+turtles.sp2
+plot(turtles.sp2, xlim=c(276200, 281800), ylim=c(824800, 832900), col = "blue")
+
+Roads.sp <- Roads_geom[, c("id", "x", "y")]
+Roads.sp
+plot(Roads.sp, xlim=c(276200, 281800), ylim=c(824800, 832900), col = "red")
+
+plot(Roads.sp, col = "red")
+plot(turtles.sp1, xlim=c(276200, 281800), ylim=c(824800, 832900), col = "yellow", add = TRUE)
+plot(turtles.sp2, xlim=c(275420.3,283783.6), ylim=c(821688.5,833464.3), col = "blue", add = TRUE)
+
+```
+
+```{r, eval = FALSE}
+
+library(sp)
+library(adehabitatHR)
+
+coordinates(turtles.sp1) <- c("x", "y")
+
+turtles.mcp1 <- mcp(turtles.sp1, percent = 100)
+turtles.mcp1 <- mcp.area(turtles.sp1, percent = 100)
+
+```
